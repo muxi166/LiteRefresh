@@ -52,7 +52,6 @@ public class Resource<T> {
         this.throwable = throwable;
     }
 
-
     public static <T> Resource<T> loading() {
         return new Resource<>(Status.LOADING, null, null, null);
     }
@@ -74,7 +73,7 @@ public class Resource<T> {
     }
 
     public static <T> Resource<T> error() {
-        return new Resource<>(Status.ERROR, null, null, null);
+        return error(null, null, null);
     }
 
     public static <T> Resource<T> error(@Nullable String msg, @Nullable T data, @Nullable Throwable throwable) {

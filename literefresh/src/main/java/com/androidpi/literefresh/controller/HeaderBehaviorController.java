@@ -22,6 +22,11 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import com.androidpi.literefresh.behavior.ScrollingContentBehavior;
 import com.androidpi.literefresh.behavior.VerticalIndicatorBehavior;
 
+import static com.androidpi.literefresh.behavior.IndicatorConfiguration.MODE_FOLLOW;
+import static com.androidpi.literefresh.behavior.IndicatorConfiguration.MODE_FOLLOW_DOWN;
+import static com.androidpi.literefresh.behavior.IndicatorConfiguration.MODE_FOLLOW_UP;
+import static com.androidpi.literefresh.behavior.IndicatorConfiguration.MODE_STILL;
+
 /**
  * The header behavior's controller, it controls header behavior how to consume the offset changes.
  */
@@ -61,7 +66,7 @@ public class HeaderBehaviorController extends VerticalIndicatorBehaviorControlle
                                                      VerticalIndicatorBehavior behavior,
                                                      ScrollingContentBehavior contentBehavior,
                                                      int currentOffset, int offsetDelta) {
-        switch (mode) {
+        switch (behavior.getConfiguration().getFollowMode()) {
             case MODE_STILL:
                 // If child has reached it's initial position then don't move again.
                 if (child.getBottom() + behavior.getConfiguration().getBottomMargin()

@@ -27,7 +27,7 @@ import com.androidpi.literefresh.utils.ViewOffsetHelper;
 /**
  * Behavior will automatically sets up a {@link ViewOffsetHelper} on a {@link View}.
  *
- * @see android.support.design.widget.ViewOffsetBehavior
+ * @see com.google.android.material.appbar.ViewOffsetBehavior
  */
 public class ViewOffsetBehavior<V extends View> extends CoordinatorLayout.Behavior<V> {
 

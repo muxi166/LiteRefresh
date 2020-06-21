@@ -22,6 +22,11 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import com.androidpi.literefresh.behavior.ScrollingContentBehavior;
 import com.androidpi.literefresh.behavior.VerticalIndicatorBehavior;
 
+import static com.androidpi.literefresh.behavior.IndicatorConfiguration.MODE_FOLLOW;
+import static com.androidpi.literefresh.behavior.IndicatorConfiguration.MODE_FOLLOW_DOWN;
+import static com.androidpi.literefresh.behavior.IndicatorConfiguration.MODE_FOLLOW_UP;
+import static com.androidpi.literefresh.behavior.IndicatorConfiguration.MODE_STILL;
+
 /**
  * The footer behavior's controller, it controls footer behavior how to consume the offset changes.
  */
@@ -46,7 +51,7 @@ public class FooterBehaviorController extends VerticalIndicatorBehaviorControlle
                                                      VerticalIndicatorBehavior behavior,
                                                      ScrollingContentBehavior contentBehavior,
                                                      int currentOffset, int offsetDelta) {
-        switch (mode) {
+        switch (behavior.getConfiguration().getFollowMode()) {
             case MODE_STILL:
                 if (child.getTop() - behavior.getConfiguration().getTopMargin() ==
                         -behavior.getConfiguration().getInitialVisibleHeight() + parent.getHeight()) {

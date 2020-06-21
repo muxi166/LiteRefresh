@@ -27,10 +27,12 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
-    compileOnly 'androidx.recyclerview:recyclerview:1.0.0'
 
+    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
     implementation "androidx.appcompat:appcompat:${androidx.appcompat_version}"
     implementation 'androidx.dynamicanimation:dynamicanimation:1.0.0'
+
+    compileOnly 'androidx.recyclerview:recyclerview:1.1.0'
 }
 
 archivesBaseName = 'literefresh'

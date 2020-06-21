@@ -18,6 +18,7 @@ package com.androidpi.literefresh.behavior;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -28,6 +29,8 @@ import com.androidpi.literefresh.OnScrollListener;
 import com.androidpi.literefresh.R;
 import com.androidpi.literefresh.Refresher;
 import com.androidpi.literefresh.controller.HeaderBehaviorController;
+
+import static com.androidpi.literefresh.behavior.IndicatorConfiguration.MODE_FOLLOW;
 
 /**
  * This class is used to attach to a header view and add nested scrolling features to it.
@@ -67,8 +70,8 @@ public class RefreshHeaderBehavior<V extends View>
                 R.styleable.IndicatorBehavior, 0, 0);
         if (a.hasValue(R.styleable.IndicatorBehavior_lr_mode)) {
             int mode = a.getInt(
-                    R.styleable.IndicatorBehavior_lr_mode, HeaderBehaviorController.MODE_FOLLOW);
-            getController().setMode(mode);
+                    R.styleable.IndicatorBehavior_lr_mode, MODE_FOLLOW);
+            getConfiguration().setFollowMode(mode);
         }
         a.recycle();
     }
@@ -88,8 +91,8 @@ public class RefreshHeaderBehavior<V extends View>
         getConfiguration().setTriggerOffset(triggerOffset);
         // Config maximum offset.
         configMaxOffset(parent, child, initialVisibleHeight, triggerOffset);
-        if (!configuration.isSettled()) {
-            configuration.setSettled(true);
+        if (!getConfiguration().isSettled()) {
+            getConfiguration().setSettled(true);
             ScrollingContentBehavior contentBehavior = getContentBehavior(parent, child);
             if (contentBehavior != null) {
                 contentBehavior.setHeaderConfig(getConfiguration());
@@ -103,17 +106,17 @@ public class RefreshHeaderBehavior<V extends View>
 
     private void configMaxOffset(CoordinatorLayout parent, V child,
                                  int initialVisibleHeight, int triggerOffset) {
-        int currentMaxOffset = configuration.getMaxOffset();
-        if (configuration.isUseDefaultMaxOffset()) {
+        int currentMaxOffset = getConfiguration().getMaxOffset();
+        if (getConfiguration().isUseDefaultMaxOffset()) {
             // We want child can be fully visible by default.
             currentMaxOffset = (int) Math.max(GOLDEN_RATIO * parent.getHeight(),
                     child.getHeight());
         } else {
             currentMaxOffset = (int) Math.max(currentMaxOffset,
-                    configuration.getMaxOffsetRatioOfParent()
-                            > configuration.getMaxOffsetRatio()
-                            ? configuration.getMaxOffsetRatio() * parent.getHeight()
-                            : configuration.getMaxOffsetRatio() * child.getHeight());
+                    getConfiguration().getMaxOffsetRatioOfParent()
+                            > getConfiguration().getMaxOffsetRatio()
+                            ? getConfiguration().getMaxOffsetRatio() * parent.getHeight()
+                            : getConfiguration().getMaxOffsetRatio() * child.getHeight());
         }
         currentMaxOffset = Math.max(currentMaxOffset, initialVisibleHeight + triggerOffset);
         getConfiguration().setMaxOffset(currentMaxOffset);
@@ -155,15 +158,15 @@ public class RefreshHeaderBehavior<V extends View>
     @Override
     protected int getMinOffset(@NonNull CoordinatorLayout parent, @NonNull View child) {
         ContentConfiguration contentConfig = getContentBehavior(parent, child).getConfiguration();
-        return contentConfig.getMinOffset() - configuration.getBottomMargin();
+        return contentConfig.getMinOffset() - getConfiguration().getBottomMargin();
     }
 
     @Override
     protected int getMaxOffset(@NonNull CoordinatorLayout parent, @NonNull View child) {
         ContentConfiguration contentConfig = getContentBehavior(parent, child).getConfiguration();
         return contentConfig.getMaxOffset() -
-                (contentConfig.getMaxOffset() > configuration.getBottomMargin()
-                        ? configuration.getBottomMargin()
+                (contentConfig.getMaxOffset() > getConfiguration().getBottomMargin()
+                        ? getConfiguration().getBottomMargin()
                         : 0);
     }
 
@@ -176,13 +179,13 @@ public class RefreshHeaderBehavior<V extends View>
      */
     private int getInitialVisibleHeight() {
         int initialVisibleHeight;
-        if (configuration.getHeight() <= 0 || getConfiguration().getVisibleHeight() <= 0) {
+        if (getConfiguration().getHeight() <= 0 || getConfiguration().getVisibleHeight() <= 0) {
             initialVisibleHeight = getConfiguration().getVisibleHeight();
-        } else if (getConfiguration().getVisibleHeight() >= configuration.getHeight()) {
-            initialVisibleHeight = getConfiguration().getVisibleHeight() + configuration.getTopMargin()
-                    + configuration.getBottomMargin();
+        } else if (getConfiguration().getVisibleHeight() >= getConfiguration().getHeight()) {
+            initialVisibleHeight = getConfiguration().getVisibleHeight() + getConfiguration().getTopMargin()
+                    + getConfiguration().getBottomMargin();
         } else {
-            initialVisibleHeight = getConfiguration().getVisibleHeight() + configuration.getBottomMargin();
+            initialVisibleHeight = getConfiguration().getVisibleHeight() + getConfiguration().getBottomMargin();
         }
         return initialVisibleHeight;
     }

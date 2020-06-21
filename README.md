@@ -122,6 +122,7 @@ When using this method you must be sure the layout params has been generated.
     RefreshHeaderBehavior headerBehavior = new RefreshHeaderBehavior(context);
     params.setBehavior(headerBehavior);
 ```
+*In this way the configuration should be set with code too. Because we don't use a layout.*
 #### Implement interface `AttachedBehavior` for custom view
 If you implement a custom view and want to attach a behavior you can implement the
 `AttachedBehavior` interface.

@@ -22,12 +22,14 @@ import android.widget.ImageView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
+import com.androidpi.literefresh.behavior.IndicatorConfiguration;
 import com.androidpi.literefresh.behavior.RefreshHeaderBehavior;
+import com.androidpi.literefresh.controller.VerticalIndicatorBehaviorController;
 import com.androidpi.literefresh.sample.R;
 import com.androidpi.literefresh.sample.common.image.GlideApp;
 
 
-public class SampleHeaderView extends ConstraintLayout {
+public class SampleHeaderView extends ConstraintLayout{
     RefreshHeaderBehavior behavior;
 
     public SampleHeaderView(Context context) {
@@ -56,10 +58,12 @@ public class SampleHeaderView extends ConstraintLayout {
                 CoordinatorLayout.LayoutParams params = ((CoordinatorLayout.LayoutParams) getLayoutParams());
                 params.setBehavior(behavior = new RefreshHeaderBehavior(getContext()));
                 behavior.with(getContext())
+                        .maxOffsetRatio(1.0f)
                         .visibleHeightRatioRes(R.fraction.percent_50)
+                        .setFollowMode(IndicatorConfiguration.MODE_FOLLOW_DOWN)
                         .config();
             } catch (ClassCastException e) {
-
+                // ignore
             }
         }
     }

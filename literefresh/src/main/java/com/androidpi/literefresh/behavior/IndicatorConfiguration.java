@@ -19,8 +19,36 @@ import android.content.Context;
 
 import androidx.annotation.DimenRes;
 import androidx.annotation.FractionRes;
+import androidx.annotation.IntDef;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 public class IndicatorConfiguration extends Configuration {
+
+    /**
+     * Follow content view.
+     */
+    public static final int MODE_FOLLOW = 0;
+    /**
+     * Still, does not follow content view.
+     */
+    public static final int MODE_STILL = 1;
+
+    /**
+     * Follow when scroll down.
+     */
+    public static final int MODE_FOLLOW_DOWN = 2;
+
+    /**
+     * Follow when scroll up.
+     */
+    public static final int MODE_FOLLOW_UP = 3;
+
+    @IntDef({MODE_FOLLOW, MODE_STILL, MODE_FOLLOW_DOWN, MODE_FOLLOW_UP})
+    @Retention(RetentionPolicy.SOURCE)
+    @interface FollowMode{}
 
     int visibleHeight;
     float visibleHeightRatio;
@@ -30,6 +58,7 @@ public class IndicatorConfiguration extends Configuration {
     int invisibleHeight;
     Boolean showUpWhenRefresh;
     int initialVisibleHeight;
+    @FollowMode int followMode;
 
     public IndicatorConfiguration(Builder builder) {
         super(builder);
@@ -43,6 +72,7 @@ public class IndicatorConfiguration extends Configuration {
         this.invisibleHeight = builder.invisibleHeight == null ? 0 : builder.invisibleHeight;
         this.showUpWhenRefresh = builder.showUpWhenRefresh;
         this.initialVisibleHeight = builder.initialVisibleHeight == null ? 0 : builder.initialVisibleHeight;
+        this.followMode = builder.followMode;
     }
 
     public int getVisibleHeight() {
@@ -81,6 +111,10 @@ public class IndicatorConfiguration extends Configuration {
         return showUpWhenRefresh;
     }
 
+    public @FollowMode int getFollowMode() {
+        return followMode;
+    }
+
     void setVisibleHeight(int visibleHeight) {
         this.visibleHeight = visibleHeight;
     }
@@ -113,6 +147,10 @@ public class IndicatorConfiguration extends Configuration {
         this.initialVisibleHeight = initialVisibleHeight;
     }
 
+    public void setFollowMode(@FollowMode int followMode) {
+        this.followMode = followMode;
+    }
+
     public static class Builder extends Configuration.Builder {
 
         Float visibleHeightRatio;
@@ -123,6 +161,7 @@ public class IndicatorConfiguration extends Configuration {
         Integer visibleHeight;
         Boolean showUpWhenRefresh;
         Integer invisibleHeight;
+        @FollowMode int followMode;
 
         Builder() {
         }
@@ -137,17 +176,18 @@ public class IndicatorConfiguration extends Configuration {
             init(configuration);
         }
 
-        private void init(IndicatorConfiguration configuration) {
-            if (configuration == null)
+        private void init(IndicatorConfiguration config) {
+            if (config == null)
                 return;
-            this.visibleHeight = configuration.visibleHeight;
-            this.visibleHeightRatio = configuration.visibleHeightRatio;
-            this.visibleHeightRatioOfParent = configuration.visibleHeightRatioOfParent;
-            this.triggerOffset = configuration.triggerOffset;
-            this.useDefinedTriggerOffset = configuration.useDefinedTriggerOffset;
-            this.invisibleHeight = configuration.invisibleHeight;
-            this.showUpWhenRefresh = configuration.showUpWhenRefresh;
-            this.initialVisibleHeight = configuration.initialVisibleHeight;
+            this.visibleHeight = config.visibleHeight;
+            this.visibleHeightRatio = config.visibleHeightRatio;
+            this.visibleHeightRatioOfParent = config.visibleHeightRatioOfParent;
+            this.triggerOffset = config.triggerOffset;
+            this.useDefinedTriggerOffset = config.useDefinedTriggerOffset;
+            this.invisibleHeight = config.invisibleHeight;
+            this.showUpWhenRefresh = config.showUpWhenRefresh;
+            this.initialVisibleHeight = config.initialVisibleHeight;
+            this.followMode = config.followMode;
         }
 
         public Builder visibleHeight(int visibleHeight) {
@@ -200,6 +240,11 @@ public class IndicatorConfiguration extends Configuration {
 
         Builder setInvisibleHeight(int invisibleHeight) {
             this.invisibleHeight = invisibleHeight;
+            return this;
+        }
+
+        public Builder setFollowMode(@FollowMode int followMode) {
+            this.followMode = followMode;
             return this;
         }
 

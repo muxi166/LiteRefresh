@@ -70,7 +70,7 @@ public abstract class AnimationOffsetBehavior<V extends View>
     protected Handler handler = new Handler(this);
     private Queue<Runnable> pendingActions = new LinkedList<>();
     protected BehaviorController controller;
-    protected Configuration configuration;
+    private Configuration configuration;
 
     public AnimationOffsetBehavior(Context context) {
         this(context, null);

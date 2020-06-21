@@ -33,7 +33,7 @@ abstract class BaseFragment<VDB : ViewDataBinding> : Fragment() {
 
     var bindLayout: BindLayout? = null
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         bindLayout = javaClass.getAnnotation(BindLayout::class.java)
         super.onAttach(context)
     }

@@ -18,6 +18,8 @@ package com.androidpi.literefresh.behavior;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -26,6 +28,7 @@ import androidx.core.view.ViewCompat;
 
 import com.androidpi.literefresh.R;
 import com.androidpi.literefresh.controller.VerticalIndicatorBehaviorController;
+import com.androidpi.literefresh.dependency.DependencyManager;
 
 import java.util.List;
 
@@ -61,8 +64,8 @@ import java.util.List;
  * <p>
  */
 public abstract class VerticalIndicatorBehavior<V extends View>
-        extends AnimationOffsetBehavior<V> {
-
+        extends IndicatorBehavior<V> {
+    private final String TAG = "VerticalIndicator";
     private final int defaultMinTriggerOffset;
 
     public VerticalIndicatorBehavior(Context context) {
@@ -121,7 +124,7 @@ public abstract class VerticalIndicatorBehavior<V extends View>
         // Compute refresh trigger offset.
         if (getConfiguration().getTriggerOffset() < 0) {
             // User define a invalid trigger offset, use the default.
-            getConfiguration().setTriggerOffset(configuration.getDefaultTriggerOffset());
+            getConfiguration().setTriggerOffset(getConfiguration().getDefaultTriggerOffset());
         } else if (!getConfiguration().isUseDefinedTriggerOffset()) {
             // User doesn't predefined one, we need to ensure the refreshing is triggered when
             // indicator is totally visible, no matter whether child height is zero or not.
@@ -285,7 +288,7 @@ public abstract class VerticalIndicatorBehavior<V extends View>
 
     @Override
     public IndicatorConfiguration getConfiguration() {
-        return (IndicatorConfiguration) configuration;
+        return (IndicatorConfiguration) super.getConfiguration();
     }
 
     @Override

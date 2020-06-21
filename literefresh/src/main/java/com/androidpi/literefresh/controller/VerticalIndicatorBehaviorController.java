@@ -22,36 +22,19 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import com.androidpi.literefresh.behavior.ScrollingContentBehavior;
 import com.androidpi.literefresh.behavior.VerticalIndicatorBehavior;
 
+import static com.androidpi.literefresh.behavior.IndicatorConfiguration.MODE_FOLLOW;
+
 /**
  * Super class of header and footer behavior controller.
  */
 public abstract class VerticalIndicatorBehaviorController<B extends VerticalIndicatorBehavior>
         extends BehaviorController<B> {
 
-    /**
-     * Follow content view.
-     */
-    public static final int MODE_FOLLOW = 0;
-    /**
-     * Still, does not follow content view.
-     */
-    public static final int MODE_STILL = 1;
+//    protected int mode = MODE_FOLLOW;
 
-    /**
-     * Follow when scroll down.
-     */
-    public static final int MODE_FOLLOW_DOWN = 2;
-
-    /**
-     * Follow when scroll up.
-     */
-    public static final int MODE_FOLLOW_UP = 3;
-
-    protected int mode = MODE_FOLLOW;
-
-    public void setMode(int mode) {
-        this.mode = mode;
-    }
+//    public void setMode(int mode) {
+//        this.mode = mode;
+//    }
 
     public VerticalIndicatorBehaviorController(B behavior) {
         super(behavior);

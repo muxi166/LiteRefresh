@@ -32,6 +32,8 @@ import com.androidpi.literefresh.dependency.DependencyManager;
 
 import java.util.List;
 
+import static androidx.core.view.ViewCompat.TYPE_TOUCH;
+
 /**
  * Super class of header and footer behavior.
  * <p>
@@ -67,6 +69,8 @@ public abstract class VerticalIndicatorBehavior<V extends View>
         extends IndicatorBehavior<V> {
     private final String TAG = "VerticalIndicator";
     private final int defaultMinTriggerOffset;
+    private ScrollingContentBehavior scrollingContentBehavior;
+    private View dependency;
 
     public VerticalIndicatorBehavior(Context context) {
         this(context, null);
@@ -304,6 +308,77 @@ public abstract class VerticalIndicatorBehavior<V extends View>
     @Override
     public VerticalIndicatorBehaviorController getController() {
         return (VerticalIndicatorBehaviorController) super.getController();
+    }
+
+    @Override
+    public int getCurrentTopBottomOffset() {
+        if (ensureScrollingContentBehavior()) {
+            return scrollingContentBehavior.getTopAndBottomOffset();
+        }
+        return 0;
+    }
+
+    @Override
+    public int getMinTopBottomOffset() {
+        if (ensureScrollingContentBehavior()) {
+            return scrollingContentBehavior.getConfiguration().getMinOffset();
+        }
+        return 0;
+    }
+
+    @Override
+    public int getMaxTopBottomOffset() {
+        if (ensureScrollingContentBehavior()) {
+            return scrollingContentBehavior.getConfiguration().getMaxOffset();
+        }
+        return 0;
+    }
+
+    @Override
+    public void updateTopBottomOffset(CoordinatorLayout parent, View child, int offset, int delta) {
+        scrollingContentBehavior.updateTopAndBottomOffset(offset, delta, TYPE_TOUCH);
+    }
+
+    @Override
+    public void onScrollStart(CoordinatorLayout parent, V layout) {
+        if (ensureScrollingContentBehavior() && ensureDependencyView()) {
+            scrollingContentBehavior.dispatchStartScroll(parent, dependency, TYPE_TOUCH);
+        }
+    }
+
+    @Override
+    public void onScrollStop(CoordinatorLayout parent, V layout) {
+        if (ensureScrollingContentBehavior() && ensureDependencyView()) {
+            scrollingContentBehavior.dispatchStopScroll(parent, dependency, TYPE_TOUCH);
+        }
+    }
+
+    @Override
+    public void onFlingStart(CoordinatorLayout parent, V layout) {
+        if (ensureScrollingContentBehavior() && ensureDependencyView()) {
+            scrollingContentBehavior.dispatchStartScroll(parent, dependency, TYPE_TOUCH);
+        }
+    }
+
+    @Override
+    public void onFlingFinished(CoordinatorLayout parent, V layout) {
+        if (ensureScrollingContentBehavior() && ensureDependencyView()) {
+            scrollingContentBehavior.dispatchStopScroll(parent, dependency, TYPE_TOUCH);
+        }
+    }
+
+    public boolean ensureScrollingContentBehavior() {
+        if (scrollingContentBehavior == null) {
+            scrollingContentBehavior = findDependencyBehavior(getParent(), getChild());
+        }
+        return scrollingContentBehavior != null;
+    }
+
+    public boolean ensureDependencyView() {
+        if (dependency == null) {
+            dependency = findDependencyChild(getParent(), getChild());
+        }
+        return dependency != null;
     }
 
     protected abstract int getInitialOffset(@NonNull CoordinatorLayout parent, @NonNull View child);

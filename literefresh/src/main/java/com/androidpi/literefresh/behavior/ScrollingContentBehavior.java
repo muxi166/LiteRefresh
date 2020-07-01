@@ -21,8 +21,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.animation.LinearInterpolator;
-import android.widget.OverScroller;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
@@ -59,8 +57,6 @@ public class ScrollingContentBehavior<V extends View> extends AnimationOffsetBeh
     private static final int ORIENTATION_VERTICAL = 1;
     private static final int ORIENTATION_HORIZON = 2;
     private static final int ORIENTATION_VERTICAL_HORIZON = 3;
-
-    private OverScroller overScroller;
 
     private @ScrollingContentOrientation int orientation = ORIENTATION_VERTICAL;
 
@@ -106,8 +102,6 @@ public class ScrollingContentBehavior<V extends View> extends AnimationOffsetBeh
 
         }
         a.recycle();
-
-        overScroller = new OverScroller(context, new LinearInterpolator());
     }
 
     @Override
@@ -232,14 +226,18 @@ public class ScrollingContentBehavior<V extends View> extends AnimationOffsetBeh
         }
         boolean start = (axes & ViewCompat.SCROLL_AXIS_VERTICAL) != 0;
         if (start) {
-            for (ScrollingListener l : mListeners) {
-                l.onStartScroll(coordinatorLayout, child, headerConfig.getInitialVisibleHeight(),
-                        headerConfig.getInitialVisibleHeight()
-                                + headerConfig.getTriggerOffset(),
-                        getConfiguration().getMinOffset(), getConfiguration().getMaxOffset(), type);
-            }
+            dispatchStartScroll(coordinatorLayout, child, type);
         }
         return start;
+    }
+
+    public void dispatchStartScroll(@NonNull CoordinatorLayout coordinatorLayout, @NonNull V child, int type) {
+        for (ScrollingListener l : mListeners) {
+            l.onStartScroll(coordinatorLayout, child, headerConfig.getInitialVisibleHeight(),
+                    headerConfig.getInitialVisibleHeight()
+                            + headerConfig.getTriggerOffset(),
+                    getConfiguration().getMinOffset(), getConfiguration().getMaxOffset(), type);
+        }
     }
 
     @Override
@@ -254,7 +252,7 @@ public class ScrollingContentBehavior<V extends View> extends AnimationOffsetBeh
                 return;
             int offset = MathUtils.clamp(-dy, getConfiguration().getMinOffset() - top, 0);
             if (offset != 0) {
-                consumeOffset(coordinatorLayout, child, offset, type, true);
+                consumeOffsetDelta(coordinatorLayout, child, offset, type, true);
                 consumed[1] = -offset;
             }
         } else if (dy < 0) {
@@ -266,7 +264,7 @@ public class ScrollingContentBehavior<V extends View> extends AnimationOffsetBeh
             // When scrolling down, if footer is still visible.
             int offset = MathUtils.clamp(-dy, 0, coordinatorLayout.getHeight() - bottom);
             if (offset != 0) {
-                consumeOffset(coordinatorLayout, child, offset, type, true);
+                consumeOffsetDelta(coordinatorLayout, child, offset, type, true);
                 consumed[1] = -offset;
             }
         }
@@ -278,60 +276,20 @@ public class ScrollingContentBehavior<V extends View> extends AnimationOffsetBeh
                                int dxUnconsumed, int dyUnconsumed, int type) {
         // If there is unconsumed pixels.
         if (dyUnconsumed < 0) {
-            // Scrolling down.
-            final int top = child.getTop() - getConfiguration().getTopMargin();
-            final int maxOffset = getConfiguration().getMaxOffset();
-            // Top position of child can not scroll exceed maximum offset.
-            if (top >= maxOffset)
-                return;
-            int offset = MathUtils.clamp(-dyUnconsumed, 0, maxOffset - top);
-            if (offset != 0) {
-                if (top >= headerConfig.getInitialVisibleHeight()) {
-                    // When header's hidden part is visible, do not consume none touch scroll,
-                    // content can scroll to the maximum offset with the touch event only.
-                    if (type != TYPE_TOUCH)
-                        return;
-                    consumeOffset(coordinatorLayout, child, offset, type, false);
-                } else {
-                    // Header's hidden part is not visible yet.
-                    // Recompute the offset so that the top does not exceed header's initial
-                    // visible height no matter what type of touch event is.
-                    // todo: add overshot feature to make scrolling motion more nature.
-                    offset = MathUtils.clamp(-dyUnconsumed, 0,
-                            headerConfig.getInitialVisibleHeight() - top);
-                    consumeOffset(coordinatorLayout, child, offset, type, true);
-                }
-            }
+            onNestedScrollDown(coordinatorLayout, child, -dyUnconsumed, type);
         } else if (dyUnconsumed > 0) {
             // Scrolling up.
-            final int bottom = child.getBottom() + getConfiguration().getBottomMargin();
-            final int footerMaxOffset = coordinatorLayout.getHeight() - footerConfig.getMaxOffset();
-            // Can not scroll exceed footer maximum offset.
-            if (bottom <= footerMaxOffset)
-                return;
-            int offset = MathUtils.clamp(-dyUnconsumed, footerMaxOffset - bottom, 0);
-            if (offset != 0) {
-                if (coordinatorLayout.getHeight() - bottom >= footerConfig.getInitialVisibleHeight()) {
-                    // If footer's hidden part is visible, ignore fling too.
-                    if (type != TYPE_TOUCH)
-                        return;
-                    consumeOffset(coordinatorLayout, child, offset, type, false);
-                } else {
-                    // Footer's hidden part is not visible yet.
-                    // Recompute it, so that bottom doesn't exceed footer's initial visible height
-                    // no matter what type of touch event is.
-                    offset = MathUtils.clamp(-dyUnconsumed,
-                            -(footerConfig.getInitialVisibleHeight()
-                                    - coordinatorLayout.getHeight() + bottom), 0);
-                    consumeOffset(coordinatorLayout, child, offset, type, true);
-                }
-            }
+            onNestedScrollUp(coordinatorLayout, child, -dyUnconsumed, type);
         }
     }
 
     @Override
     public void onStopNestedScroll(@NonNull CoordinatorLayout coordinatorLayout, @NonNull V child,
                                    @NonNull View target, int type) {
+        dispatchStopScroll(coordinatorLayout, child, type);
+    }
+
+    public void dispatchStopScroll(@NonNull CoordinatorLayout coordinatorLayout, @NonNull V child, int type) {
         for (ScrollingListener l : mListeners) {
             l.onStopScroll(coordinatorLayout, child, getTopAndBottomOffset(),
                     headerConfig.getInitialVisibleHeight(),
@@ -347,7 +305,7 @@ public class ScrollingContentBehavior<V extends View> extends AnimationOffsetBeh
                                     @NonNull View target, float velocityX, float velocityY) {
 //        int top = child.getTop() - getConfiguration().getTopMargin();
 //        int bottom = child.getBottom() + getConfiguration().getBottomMargin();
-//        // todo: should fling if header can scroll up or footer can scroll down
+//        // todo: to make fling more nature when header can scroll up or footer can scroll down
 //        if (top > getConfiguration().getMinOffset()) {
 //            return true;
 //        }
@@ -363,6 +321,65 @@ public class ScrollingContentBehavior<V extends View> extends AnimationOffsetBeh
     }
 
     /**
+     * Nested scroll down.
+     * @param coordinatorLayout
+     * @param child
+     * @param offsetDelta
+     * @param type
+     */
+    public void onNestedScrollDown(CoordinatorLayout coordinatorLayout, V child, int offsetDelta, int type) {
+        // Scrolling down.
+        final int top = child.getTop() - getConfiguration().getTopMargin();
+        final int maxOffset = getConfiguration().getMaxOffset();
+        // Top position of child can not scroll exceed maximum offset.
+        if (top >= maxOffset)
+            return;
+        int offset = MathUtils.clamp(offsetDelta, 0, maxOffset - top);
+        if (offset != 0) {
+            if (top >= headerConfig.getInitialVisibleHeight()) {
+                // When header's hidden part is visible, do not consume none touch scroll,
+                // content can scroll to the maximum offset with the touch event only.
+                if (type != TYPE_TOUCH)
+                    return;
+                consumeOffsetDelta(coordinatorLayout, child, offset, type, false);
+            } else {
+                // Header's hidden part is not visible yet.
+                // Recompute the offset so that the top does not exceed header's initial
+                // visible height no matter what type of touch event is.
+                // todo: add overshot feature to make scrolling motion more nature.
+                offset = MathUtils.clamp(offsetDelta, 0,
+                        headerConfig.getInitialVisibleHeight() - top);
+                consumeOffsetDelta(coordinatorLayout, child, offset, type, true);
+            }
+        }
+    }
+
+    public void onNestedScrollUp(CoordinatorLayout coordinatorLayout, V child, int offsetDelta, int type) {
+        final int bottom = child.getBottom() + getConfiguration().getBottomMargin();
+        final int footerMaxOffset = coordinatorLayout.getHeight() - footerConfig.getMaxOffset();
+        // Can not scroll exceed footer maximum offset.
+        if (bottom <= footerMaxOffset)
+            return;
+        int offset = MathUtils.clamp(offsetDelta, footerMaxOffset - bottom, 0);
+        if (offset != 0) {
+            if (coordinatorLayout.getHeight() - bottom >= footerConfig.getInitialVisibleHeight()) {
+                // If footer's hidden part is visible, ignore fling too.
+                if (type != TYPE_TOUCH)
+                    return;
+                consumeOffsetDelta(coordinatorLayout, child, offset, type, false);
+            } else {
+                // Footer's hidden part is not visible yet.
+                // Recompute it, so that bottom doesn't exceed footer's initial visible height
+                // no matter what type of touch event is.
+                offset = MathUtils.clamp(offsetDelta,
+                        -(footerConfig.getInitialVisibleHeight()
+                                - coordinatorLayout.getHeight() + bottom), 0);
+                consumeOffsetDelta(coordinatorLayout, child, offset, type, true);
+            }
+        }
+    }
+
+    /**
      * @param coordinatorLayout
      * @param child
      * @param offsetDelta
@@ -371,8 +388,8 @@ public class ScrollingContentBehavior<V extends View> extends AnimationOffsetBeh
      *                          not just keep it.
      * @return
      */
-    private int consumeOffset(CoordinatorLayout coordinatorLayout, V child, int offsetDelta,
-                              int type, boolean consumeRawOffset) {
+    private int consumeOffsetDelta(CoordinatorLayout coordinatorLayout, V child, int offsetDelta,
+                                   int type, boolean consumeRawOffset) {
         int currentOffset = getTopAndBottomOffset();
         // Before child consume the offset.
         for (ScrollingListener l : mListeners) {
@@ -451,6 +468,20 @@ public class ScrollingContentBehavior<V extends View> extends AnimationOffsetBeh
                 }
             };
             handler.postDelayed(offsetCallback, holdOn ? HOLD_ON_DURATION : 0L);
+        }
+    }
+
+    /**
+     * todo delegated to onNestedScroll
+     * @param offset
+     * @param delta
+     * @param type
+     */
+    public void updateTopAndBottomOffset(int offset, int delta, int type) {
+        if (delta > 0) {
+            onNestedScrollDown(getParent(), getChild(), delta, type);
+        } else {
+            onNestedScrollUp(getParent(), getChild(), delta, type);
         }
     }
 

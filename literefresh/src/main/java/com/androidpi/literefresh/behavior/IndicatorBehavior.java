@@ -53,6 +53,7 @@ public abstract class IndicatorBehavior<V extends View>
     private VelocityTracker velocityTracker;
 
     private boolean isDraggable = true;
+    private boolean isFling = false;
 
     public IndicatorBehavior(Context context) {
         super(context);
@@ -181,6 +182,7 @@ public abstract class IndicatorBehavior<V extends View>
 
                 if (isBeingDragged) {
                     lastMotionY = y;
+                    Log.d(TAG, "onScrollStart");
                     onScrollStart(parent, child);
                     scroll(parent, child, dy);
                 }
@@ -193,13 +195,15 @@ public abstract class IndicatorBehavior<V extends View>
                     velocityTracker.addMovement(ev);
                     velocityTracker.computeCurrentVelocity(1000);
                     float yvel = velocityTracker.getYVelocity(activePointerId);
+                    Log.d(TAG, "onFlingStart");
                     onFlingStart(parent, child);
                     fling(parent, child, yvel);
                 }
             case MotionEvent.ACTION_CANCEL:
                 logPointer("cancel", actionIndex, pointerId);
             {
-                if (isBeingDragged) {
+                if (isBeingDragged && !isFling) {
+                    Log.d(TAG, "onScrollStop");
                     onScrollStop(parent, child);
                 }
                 isBeingDragged = false;
@@ -247,7 +251,7 @@ public abstract class IndicatorBehavior<V extends View>
         }
 
         // begin fling
-
+        isFling = true;
         scroller.fling(0,
                 getCurrentTopBottomOffset(), // curr
                 0,
@@ -262,6 +266,8 @@ public abstract class IndicatorBehavior<V extends View>
             ViewCompat.postOnAnimation(layout, flingRunnable);
             return true;
         } else {
+            Log.d(TAG, "onFlingFinished");
+            isFling = false;
             onFlingFinished(coordinatorLayout, layout);
             return false;
         }
@@ -347,6 +353,8 @@ public abstract class IndicatorBehavior<V extends View>
                     updateTopBottomOffset(parent, child, current, current - last);
                     ViewCompat.postOnAnimation(child, this);
                 } else {
+                    Log.d(TAG, "onFlingFinished");
+                    isFling = false;
                     onFlingFinished(parent, child);
                 }
             }
@@ -357,8 +365,6 @@ public abstract class IndicatorBehavior<V extends View>
     public abstract int getMinTopBottomOffset();
     public abstract int getMaxTopBottomOffset();
     public abstract void updateTopBottomOffset(CoordinatorLayout parent, View child, int offset, int delta);
-
-
     public abstract void onScrollStart(CoordinatorLayout parent, V layout);
     public abstract void onScrollStop(CoordinatorLayout parent, V layout);
     public abstract void onFlingStart(CoordinatorLayout parent, V layout);

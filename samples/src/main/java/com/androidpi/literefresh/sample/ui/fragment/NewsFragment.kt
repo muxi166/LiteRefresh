@@ -20,6 +20,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,7 +34,6 @@ import com.androidpi.literefresh.behavior.RefreshHeaderBehavior
 import com.androidpi.literefresh.sample.R
 import com.androidpi.literefresh.sample.base.model.Resource
 import com.androidpi.literefresh.sample.base.ui.BaseFragment
-import com.androidpi.literefresh.sample.base.ui.BindLayout
 import com.androidpi.literefresh.sample.base.ui.RecyclerAdapter
 import com.androidpi.literefresh.sample.databinding.FragmentNewsBinding
 import com.androidpi.literefresh.sample.model.ErrorItem
@@ -43,20 +43,24 @@ import com.androidpi.literefresh.sample.model.NewsPagination.Companion.PAGE_SIZE
 import com.androidpi.literefresh.sample.ui.viewholder.ErrorViewHolder
 import com.androidpi.literefresh.sample.ui.viewholder.NewsViewHolder
 import com.androidpi.literefresh.sample.vm.NewsViewModel
+import layoutbinder.annotations.BindLayout
 
 
-@BindLayout(R.layout.fragment_news)
-class NewsFragment : BaseFragment<FragmentNewsBinding>() {
 
-    lateinit var mNewsModel: NewsViewModel
+class NewsFragment : BaseFragment() {
+
+    @BindLayout(R.layout.fragment_news)
+    lateinit var binding: FragmentNewsBinding
+
+    val mNewsModel: NewsViewModel by viewModels()
 
     lateinit var mAdapter: RecyclerAdapter
 
     var mNewsCategory: String? = null
 
-    lateinit var headerBehavior: RefreshHeaderBehavior<View>
+    lateinit var headerBehavior: RefreshHeaderBehavior<*>
 
-    lateinit var footerBehavior: RefreshFooterBehavior<View>
+    lateinit var footerBehavior: RefreshFooterBehavior<*>
 
 
     companion object {
@@ -80,7 +84,6 @@ class NewsFragment : BaseFragment<FragmentNewsBinding>() {
         super.onCreate(savedInstanceState)
         // If retainInstance is set to be true, on configuration change,
         // onCreate will not be called, therefore [NewsViewModel] will not be recreated.
-        mNewsModel = getViewModelOfActivity(NewsViewModel::class.java)
         mNewsCategory = arguments?.getString(KEY_CATEGORY)
         mNewsCategory = if (mNewsCategory == null) "general" else mNewsCategory
         mNewsModel.mCategory = mNewsCategory
@@ -95,7 +98,7 @@ class NewsFragment : BaseFragment<FragmentNewsBinding>() {
             val pagination: NewsPagination? = t.data
             if (t.isSuccess) {
                 if (pagination == null) {
-                    mAdapter.setPayloads(ErrorItem("Empty data"))
+                    mAdapter.setPayload(ErrorItem("Empty data"))
                     return@Observer
                 }
                 if (pagination.isFirstPage()) {
@@ -113,12 +116,12 @@ class NewsFragment : BaseFragment<FragmentNewsBinding>() {
                 }
             } else if (t.isError) {
                 if (pagination == null) {
-                    mAdapter.setPayloads(ErrorItem("Empty data"))
+                    mAdapter.setPayload(ErrorItem("Empty data"))
                     return@Observer
                 }
                 if (pagination.isFirstPage()) {
                     refreshFinished(t.throwable)
-                    mAdapter.setPayloads(ErrorItem("Loading failed"))
+                    mAdapter.setPayload(ErrorItem("Loading failed"))
                 } else {
                     loadFinished(t.throwable as Exception)
                 }
@@ -178,7 +181,7 @@ class NewsFragment : BaseFragment<FragmentNewsBinding>() {
 
         // Set footer behavior.
         val footerParams = binding.scrollFooter.layoutParams as CoordinatorLayout.LayoutParams
-        footerBehavior = RefreshFooterBehavior(context)
+        footerBehavior = RefreshFooterBehavior<View>(context)
         footerBehavior.addOnLoadListener(object : OnLoadListener {
             override fun onLoadStart() {
 

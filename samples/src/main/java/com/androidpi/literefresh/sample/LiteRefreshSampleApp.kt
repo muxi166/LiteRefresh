@@ -13,21 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.androidpi.literefresh.sample.base.ui
+package com.androidpi.literefresh.sample
 
-import android.content.Context
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProviders
-import layoutbinder.LayoutBinder
-import layoutbinder.LayoutBinderFragment
-import layoutbinder.annotations.BindLayout
+import android.app.Application
+import androidx.multidex.MultiDexApplication
+import com.androidpi.literefresh.sample.common.log.LogHelper.init
 
-
-abstract class BaseFragment : LayoutBinderFragment()
+class LiteRefreshSampleApp : MultiDexApplication() {
+    override fun onCreate() {
+        super.onCreate()
+        init()
+    }
+}

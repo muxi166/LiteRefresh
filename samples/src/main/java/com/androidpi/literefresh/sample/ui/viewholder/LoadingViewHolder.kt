@@ -19,17 +19,11 @@ import android.view.View
 import com.androidpi.literefresh.sample.R
 import com.androidpi.literefresh.sample.base.ui.BaseViewHolder
 import com.androidpi.literefresh.sample.base.ui.ViewBinder
-import com.androidpi.literefresh.sample.databinding.ViewHolderErrorBinding
-import com.androidpi.literefresh.sample.model.ErrorItem
+import com.androidpi.literefresh.sample.databinding.ViewHolderLoadingBinding
+import com.androidpi.literefresh.sample.model.LoadingItem
 import layoutbinder.annotations.BindLayout
 
-
-@ViewBinder(value = R.layout.view_holder_error, dataTypes = [ErrorItem::class])
-class ErrorViewHolder(itemView: View) : BaseViewHolder<ViewHolderErrorBinding>(itemView) {
-
-    override fun <T : Any?> onBind(data: T, position: Int) {
-        if (data is ErrorItem) {
-            binding?.tvMessage?.text = data.message
-        }
-    }
+@ViewBinder(value = R.layout.view_holder_loading, dataTypes = [LoadingItem::class])
+class LoadingViewHolder(itemView: View?) : BaseViewHolder<ViewHolderLoadingBinding>(itemView) {
+    override fun <T> onBind(data: T, position: Int) {}
 }

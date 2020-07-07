@@ -15,34 +15,10 @@
  */
 package com.androidpi.literefresh.sample.ui.fragment
 
-import android.os.Bundle
-import android.view.View
 import com.androidpi.literefresh.sample.R
 import com.androidpi.literefresh.sample.base.ui.BaseFragment
-import com.androidpi.literefresh.sample.databinding.FragmentTempBinding
+import com.androidpi.literefresh.sample.databinding.FragmentHeaderFollowBinding
 import layoutbinder.annotations.BindLayout
 
-
-class TempFragment : BaseFragment() {
-
-    @BindLayout(R.layout.fragment_temp)
-    lateinit var binding: FragmentTempBinding
-
-    companion object {
-        val KEY_MESSAGE = "TempFragment.KEY_MESSAGE"
-
-        fun newInstance(message: String): TempFragment {
-
-            val args = Bundle()
-            args.putString(KEY_MESSAGE, message)
-            val fragment = TempFragment()
-            fragment.arguments = args
-            return fragment
-        }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        binding.tvMessage.text = arguments?.getString(KEY_MESSAGE)
-    }
-}
+@BindLayout(R.layout.fragment_header_follow)
+class HeaderFollowFragment : BaseFragment()

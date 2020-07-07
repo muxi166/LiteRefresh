@@ -20,24 +20,25 @@ import android.net.Uri
 import android.view.View
 import com.androidpi.literefresh.sample.R
 import com.androidpi.literefresh.sample.base.ui.BaseViewHolder
-import com.androidpi.literefresh.sample.base.ui.BindLayout
+import com.androidpi.literefresh.sample.base.ui.ViewBinder
 import com.androidpi.literefresh.sample.common.image.GlideApp
 import com.androidpi.literefresh.sample.databinding.ViewHolderNewsBinding
 import com.androidpi.literefresh.sample.model.News
 import com.androidpi.literefresh.sample.ui.HtmlActivity
+import layoutbinder.annotations.BindLayout
 
 
-@BindLayout(value = R.layout.view_holder_news, dataTypes = [News::class])
+@ViewBinder(value = R.layout.view_holder_news, dataTypes = [News::class])
 class NewsViewHolder(itemView: View) : BaseViewHolder<ViewHolderNewsBinding>(itemView) {
 
     override fun <T : Any?> onBind(data: T, position: Int) {
         val news = data as? News
-        binding.tvTitle.text = news?.title
-        binding.tvPublishTime.text = news?.publishedAt
+        binding?.tvTitle?.text = news?.title
+        binding?.tvPublishTime?.text = news?.publishedAt
 
         if (news != null && news.urlToImage != null) {
-            binding.ivImage.visibility = View.VISIBLE
-            GlideApp.with(itemView).load(news.urlToImage).into(binding.ivImage)
+            binding?.ivImage?.visibility = View.VISIBLE
+            binding?.ivImage?.let { GlideApp.with(itemView).load(news.urlToImage).into(it) }
         }
 
         itemView.setOnClickListener {
@@ -52,7 +53,7 @@ class NewsViewHolder(itemView: View) : BaseViewHolder<ViewHolderNewsBinding>(ite
     override fun onViewRecycled() {
         super.onViewRecycled()
         itemView.setOnClickListener(null)
-        binding.ivImage.visibility = View.GONE
-        GlideApp.with(itemView).clear(binding.ivImage)
+        binding?.ivImage?.visibility = View.GONE
+        binding?.ivImage?.let { GlideApp.with(itemView).clear(it) }
     }
 }

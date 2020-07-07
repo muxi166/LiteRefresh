@@ -13,21 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.androidpi.literefresh.sample.base.ui
+package com.androidpi.literefresh.sample.model
 
-import android.content.Context
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProviders
-import layoutbinder.LayoutBinder
-import layoutbinder.LayoutBinderFragment
-import layoutbinder.annotations.BindLayout
-
-
-abstract class BaseFragment : LayoutBinderFragment()
+class SampleUnsplashPhoto(var author: String, var photoResId: Int)

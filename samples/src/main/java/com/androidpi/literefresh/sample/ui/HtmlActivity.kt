@@ -27,7 +27,7 @@ import com.androidpi.literefresh.sample.R
 import com.androidpi.literefresh.sample.base.ui.BaseActivity
 import kotlinx.android.synthetic.main.activity_html.*
 
-class HtmlActivity : BaseActivity<ViewDataBinding>() {
+class HtmlActivity : BaseActivity() {
 
     var mSettings: WebSettings? = null
     var mUrl: String? = null

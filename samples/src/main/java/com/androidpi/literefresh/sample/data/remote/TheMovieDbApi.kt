@@ -45,7 +45,7 @@ interface TheMovieDbApi {
                    @Query("api_key") apiKey: String = API_KEY_V3): Single<ResTvPage>
 
     @GET("trending/{media_type}/{time_window}")
-    fun trending(@Path("media_type") mediaType: String,
+    fun trending(@Path("media_type") mediaType: String?,
                  @Path("time_window") timeWindow: String,
                  @Query("api_key") apiKey: String = API_KEY_V3): Single<ResTrendingPage>
 

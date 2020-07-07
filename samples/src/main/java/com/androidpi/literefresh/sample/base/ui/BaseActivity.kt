@@ -28,17 +28,13 @@ import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
 import com.androidpi.literefresh.sample.R
+import layoutbinder.LayoutBinder
+import layoutbinder.LayoutBinderActivity
 
-abstract class BaseActivity<VDB : ViewDataBinding> : AppCompatActivity(){
-
-    lateinit var binding: VDB
+abstract class BaseActivity : LayoutBinderActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val bindLayout = javaClass.getAnnotation(BindLayout::class.java)
-        if (bindLayout != null) {
-            binding = DataBindingUtil.setContentView(this, bindLayout.value)
-        }
 
         val view = window.decorView
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {

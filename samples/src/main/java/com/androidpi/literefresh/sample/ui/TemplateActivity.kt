@@ -26,18 +26,20 @@ import android.view.View
 import android.view.WindowManager
 import com.androidpi.literefresh.sample.R
 import com.androidpi.literefresh.sample.base.ui.BaseActivity
-import com.androidpi.literefresh.sample.base.ui.BindLayout
 import com.androidpi.literefresh.sample.base.ui.FragmentFactory
 import com.androidpi.literefresh.sample.base.ui.FragmentFactoryMap
 import com.androidpi.literefresh.sample.databinding.ActivityTemplateBinding
+import layoutbinder.annotations.BindLayout
 import timber.log.Timber
 
 /**
  * Activity that doesn't have a special launch mode can use this template and
  * fill the content with a fragment.
  */
-@BindLayout(R.layout.activity_template)
-class TemplateActivity : BaseActivity<ActivityTemplateBinding>() {
+class TemplateActivity : BaseActivity() {
+
+    @BindLayout(R.layout.activity_template)
+    lateinit var binding: ActivityTemplateBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

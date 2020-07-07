@@ -20,14 +20,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.androidpi.literefresh.sample.base.ui.BaseActivity
-import com.androidpi.literefresh.sample.base.ui.BindLayout
 import com.androidpi.literefresh.sample.databinding.ActivityMainBinding
 import com.androidpi.literefresh.sample.ui.fragment.LiteRefreshPagerFragment
 import com.androidpi.literefresh.sample.ui.fragment.LiteRefreshSamplesFragment
 import com.androidpi.literefresh.sample.ui.fragment.TempFragment
+import layoutbinder.annotations.BindLayout
 
-@BindLayout(R.layout.activity_main)
-class MainActivity : BaseActivity<ActivityMainBinding>() {
+class MainActivity : BaseActivity() {
+
+    @BindLayout(R.layout.activity_main)
+    lateinit var binding: ActivityMainBinding
 
     companion object {
 

@@ -19,17 +19,14 @@ import android.view.View
 import com.androidpi.literefresh.sample.R
 import com.androidpi.literefresh.sample.base.ui.BaseViewHolder
 import com.androidpi.literefresh.sample.base.ui.ViewBinder
-import com.androidpi.literefresh.sample.databinding.ViewHolderErrorBinding
-import com.androidpi.literefresh.sample.model.ErrorItem
+import com.androidpi.literefresh.sample.common.image.GlideApp
+import com.androidpi.literefresh.sample.databinding.ViewHolderUnsplashPhotoHeaderBinding
+import com.androidpi.literefresh.sample.model.HeaderUnsplashPhoto
 import layoutbinder.annotations.BindLayout
 
-
-@ViewBinder(value = R.layout.view_holder_error, dataTypes = [ErrorItem::class])
-class ErrorViewHolder(itemView: View) : BaseViewHolder<ViewHolderErrorBinding>(itemView) {
-
-    override fun <T : Any?> onBind(data: T, position: Int) {
-        if (data is ErrorItem) {
-            binding?.tvMessage?.text = data.message
-        }
+@ViewBinder(value = R.layout.view_holder_unsplash_photo_header, dataTypes = [HeaderUnsplashPhoto::class])
+class UnsplashPhotoHeaderViewHolder(itemView: View?) : BaseViewHolder<ViewHolderUnsplashPhotoHeaderBinding>(itemView) {
+    override fun <T> onBind(data: T, position: Int) {
+        GlideApp.with(itemView).load(R.mipmap.photo8).into(binding!!.ivPhoto)
     }
 }

@@ -13,21 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.androidpi.literefresh.sample.base.ui
+package com.androidpi.literefresh.sample.utils
 
 import android.content.Context
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProviders
-import layoutbinder.LayoutBinder
-import layoutbinder.LayoutBinderFragment
-import layoutbinder.annotations.BindLayout
+import com.androidpi.literefresh.sample.R
 
-
-abstract class BaseFragment : LayoutBinderFragment()
+object UiUtils {
+    fun getStatusBarHeight(context: Context): Int {
+        val statusBarHeight: Int
+        val resources = context.resources
+        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
+        statusBarHeight = if (resourceId != 0) {
+            resources.getDimensionPixelSize(resourceId)
+        } else {
+            resources.getDimensionPixelSize(R.dimen.app_status_bar_height)
+        }
+        return statusBarHeight
+    }
+}

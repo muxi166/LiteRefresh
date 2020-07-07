@@ -17,6 +17,7 @@ package com.androidpi.literefresh;
 
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
@@ -37,6 +38,7 @@ public class LiteRefreshHelper {
      * @param <T> type of the behavior
      * @return
      */
+    @NonNull
     public static <T extends AnimationOffsetBehavior> T getAttachedBehavior(View view) {
         try {
             CoordinatorLayout.LayoutParams params =
@@ -46,9 +48,9 @@ public class LiteRefreshHelper {
             } else if (view instanceof CoordinatorLayout.AttachedBehavior) {
                 return (T) ((CoordinatorLayout.AttachedBehavior) view).getBehavior();
             }
-            return null;
+            throw new IllegalArgumentException("No behavior has been attached to the view.");
         } catch (ClassCastException e) {
-            return null;
+            throw e;
         }
     }
 
@@ -58,7 +60,7 @@ public class LiteRefreshHelper {
      * @param view
      * @return
      */
-    @Nullable
+    @NonNull
     public static RefreshContentBehavior getContentBehavior(View view) {
         return getAttachedBehavior(view);
     }
@@ -68,7 +70,7 @@ public class LiteRefreshHelper {
      * @param view
      * @return
      */
-    @Nullable
+    @NonNull
     public static RefreshHeaderBehavior getHeaderBehavior(View view) {
         return getAttachedBehavior(view);
     }
@@ -78,7 +80,7 @@ public class LiteRefreshHelper {
      * @param view
      * @return
      */
-    @Nullable
+    @NonNull
     public static RefreshFooterBehavior getFooterBehavior(View view) {
         return getAttachedBehavior(view);
     }

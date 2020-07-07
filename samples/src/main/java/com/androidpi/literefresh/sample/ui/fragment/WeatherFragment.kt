@@ -19,24 +19,25 @@ package com.androidpi.literefresh.sample.ui.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.androidpi.literefresh.OnRefreshListener
 import com.androidpi.literefresh.behavior.RefreshHeaderBehavior
 import com.androidpi.literefresh.sample.R
 import com.androidpi.literefresh.sample.base.ui.BaseFragment
-import com.androidpi.literefresh.sample.base.ui.BindLayout
 import com.androidpi.literefresh.sample.databinding.FragmentWeatherBinding
 import com.androidpi.literefresh.sample.vm.WeatherViewModel
+import layoutbinder.annotations.BindLayout
 
-@BindLayout(R.layout.fragment_weather)
-class WeatherFragment : BaseFragment<FragmentWeatherBinding>() {
+class WeatherFragment : BaseFragment() {
 
-    lateinit var viewModel: WeatherViewModel
+    @BindLayout(R.layout.fragment_weather)
+    lateinit var binding : FragmentWeatherBinding
+    val viewModel: WeatherViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(WeatherViewModel::class.java)
 
         val behavior = (binding.refreshHeader.layoutParams as CoordinatorLayout.LayoutParams).behavior as RefreshHeaderBehavior
         behavior.addOnRefreshListener(object : OnRefreshListener {
@@ -54,15 +55,15 @@ class WeatherFragment : BaseFragment<FragmentWeatherBinding>() {
             }
         })
 
-        viewModel.weatherResult.observe(this, Observer { resCurrentWeatherResource ->
+        viewModel.weatherResult.observe(viewLifecycleOwner, Observer { resCurrentWeatherResource ->
             if (resCurrentWeatherResource == null) return@Observer
             if (resCurrentWeatherResource.isSuccess) {
                 behavior.refreshComplete()
-                val weatherBean = resCurrentWeatherResource.data!!.weather[0]
-                val mainBean = resCurrentWeatherResource.data.main
-                binding.ivIcon.setImageResource(resources.getIdentifier("ic_" + weatherBean.icon, "drawable", context?.packageName))
-                binding.tvDescription.text = weatherBean.description.capitalize()
-                binding.tvTemperature.text = getString(R.string.format_temperature, mainBean.temp - 273.15)
+                val weatherBean = resCurrentWeatherResource.data?.weather?.get(0)
+                val mainBean = resCurrentWeatherResource.data?.main
+                binding.ivIcon.setImageResource(resources.getIdentifier("ic_" + weatherBean?.icon, "drawable", context?.packageName))
+                binding.tvDescription.text = weatherBean?.description?.capitalize()
+                binding.tvTemperature.text = getString(R.string.format_temperature, mainBean?.temp?.minus(273.15))
             } else if (resCurrentWeatherResource.isError) {
                 behavior.refreshError(resCurrentWeatherResource.throwable)
             }

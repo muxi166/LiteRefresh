@@ -108,28 +108,28 @@ class TheMovieDbViewModel : ViewModel() {
                 })
     }
 
-    fun getWeekTrending(type: String, data: MutableLiveData<Resource<ResTrendingPage>>) {
+    fun getWeekTrending(type: String?, data: MutableLiveData<Resource<ResTrendingPage>>?) {
         getTrending(type, TRENDING_TIMEWINDOW_WEEK, data)
     }
 
-    fun getDayTrending(type: String, data: MutableLiveData<Resource<ResTrendingPage>>) {
+    fun getDayTrending(type: String?, data: MutableLiveData<Resource<ResTrendingPage>>?) {
         getTrending(type, TRENDING_TIMEWINDOW_DAY, data)
     }
 
-    fun getTrending(type: String, timeWindow: String, data: MutableLiveData<Resource<ResTrendingPage>>) {
+    fun getTrending(type: String?, timeWindow: String, data: MutableLiveData<Resource<ResTrendingPage>>?) {
         api.trending(type, timeWindow)
                 .compose(RxUtils.networkIO())
                 .subscribe(object : SingleObserver<ResTrendingPage> {
                     override fun onSuccess(t: ResTrendingPage) {
-                        data.value = Resource.success(t)
+                        data?.value = Resource.success(t)
                     }
 
                     override fun onSubscribe(d: Disposable) {
-                        data.value = Resource.loading()
+                        data?.value = Resource.loading()
                     }
 
                     override fun onError(e: Throwable) {
-                        data.value = Resource.error(e)
+                        data?.value = Resource.error(e)
                     }
                 })
     }

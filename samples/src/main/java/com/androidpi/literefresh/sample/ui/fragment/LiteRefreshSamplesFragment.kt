@@ -18,11 +18,11 @@ package com.androidpi.literefresh.sample.ui.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.androidpi.literefresh.sample.LiteRefreshSamples.samples
 import com.androidpi.literefresh.sample.R
 import com.androidpi.literefresh.sample.base.ui.BaseFragment
 import com.androidpi.literefresh.sample.base.ui.RecyclerAdapter
 import com.androidpi.literefresh.sample.databinding.FragmentLiteRefreshSamplesBinding
-import com.androidpi.literefresh.sample.model.LiteRefreshSamples.samples
 import com.androidpi.literefresh.sample.ui.viewholder.LiteRefreshSampleViewHolder
 import layoutbinder.annotations.BindLayout
 

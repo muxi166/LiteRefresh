@@ -23,7 +23,7 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.androidpi.literefresh.LiteRefreshHelper
+import com.androidpi.literefresh.LiteRefresh
 import com.androidpi.literefresh.OnRefreshListener
 import com.androidpi.literefresh.OnScrollListener
 import com.androidpi.literefresh.behavior.RefreshContentBehavior
@@ -62,7 +62,7 @@ class PartialVisibleListFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val behavior = LiteRefreshHelper.getAttachedBehavior<RefreshContentBehavior<*>>(binding!!.recyclerView)
+        val behavior = LiteRefresh.getAttachedBehavior<RefreshContentBehavior<*>>(binding!!.recyclerView)
         binding!!.recyclerView.layoutManager = LinearLayoutManager(context)
         binding!!.recyclerView.adapter = adapter
         unsplashViewModel!!.randomPhotosResult.observe(viewLifecycleOwner, Observer<Resource<UnsplashPhotoPage>> { listResource ->
@@ -90,6 +90,10 @@ class PartialVisibleListFragment : BaseFragment() {
         if (behavior != null) {
             behavior.addOnScrollListener(object : OnScrollListener {
                 override fun onStartScroll(parent: CoordinatorLayout, view: View, initial: Int, trigger: Int, min: Int, max: Int, type: Int) {}
+                override fun onPreScroll(parent: CoordinatorLayout, view: View, current: Int, initial: Int, trigger: Int, min: Int, max: Int, type: Int) {
+
+                }
+
                 override fun onScroll(parent: CoordinatorLayout, view: View, current: Int, delta: Int, initial: Int, trigger: Int, min: Int, max: Int, type: Int) {}
                 override fun onStopScroll(parent: CoordinatorLayout, view: View, current: Int, initial: Int, trigger: Int, min: Int, max: Int, type: Int) {
                     if (type == ViewCompat.TYPE_TOUCH && !behavior.controller.isRefreshing) {

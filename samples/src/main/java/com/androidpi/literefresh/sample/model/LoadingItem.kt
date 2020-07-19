@@ -14,5 +14,4 @@
  * limitations under the License.
  */
 package com.androidpi.literefresh.sample.model
-
 class LoadingItem

@@ -22,7 +22,7 @@ import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import com.androidpi.literefresh.LiteRefreshHelper
+import com.androidpi.literefresh.LiteRefresh
 import com.androidpi.literefresh.OnRefreshListener
 import com.androidpi.literefresh.OnScrollListener
 import com.androidpi.literefresh.behavior.RefreshContentBehavior
@@ -45,8 +45,8 @@ class CollapsibleHeaderFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val headerBehavior = LiteRefreshHelper.getAttachedBehavior<RefreshHeaderBehavior<*>>(binding!!.viewHeader)
-        val contentBehavior = LiteRefreshHelper.getAttachedBehavior<RefreshContentBehavior<*>>(binding!!.viewContent)
+        val headerBehavior = LiteRefresh.getAttachedBehavior<RefreshHeaderBehavior<*>>(binding!!.viewHeader)
+        val contentBehavior = LiteRefresh.getAttachedBehavior<RefreshContentBehavior<*>>(binding!!.viewContent)
         binding!!.circleProgress.setColor(resources.getColor(R.color.colorAccent))
         binding!!.imagePagerHeader.setFragmentManager(childFragmentManager)
         val fragment = childFragmentManager.findFragmentById(R.id.fragment) as UnsplashPhotoGridFragment?
@@ -84,6 +84,10 @@ class CollapsibleHeaderFragment : BaseFragment() {
             contentBehavior.addOnScrollListener(object : OnScrollListener {
                 var drawable = ColorDrawable(Color.BLACK)
                 override fun onStartScroll(parent: CoordinatorLayout, view: View, initial: Int, trigger: Int, min: Int, max: Int, type: Int) {}
+                override fun onPreScroll(parent: CoordinatorLayout, view: View, current: Int, initial: Int, trigger: Int, min: Int, max: Int, type: Int) {
+
+                }
+
                 override fun onScroll(parent: CoordinatorLayout, view: View, current: Int, delta: Int, initial: Int, trigger: Int, min: Int, max: Int, type: Int) {
                     // set header's translation
                     if (current <= initial) {

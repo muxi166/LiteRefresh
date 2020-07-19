@@ -149,6 +149,10 @@ class NewsFragment : BaseFragment() {
                 binding.headerProgress.max = max
             }
 
+            override fun onPreScroll(parent: CoordinatorLayout, view: View, current: Int, initial: Int, trigger: Int, min: Int, max: Int, type: Int) {
+
+            }
+
             override fun onScroll(parent: CoordinatorLayout, view: View, current: Int, delta: Int, initial: Int, trigger: Int, min: Int, max: Int, type: Int) {
                 binding.headerProgress.progress = current
             }
@@ -203,6 +207,10 @@ class NewsFragment : BaseFragment() {
             override fun onScroll(parent: CoordinatorLayout, view: View, current: Int, delta: Int, initial: Int, trigger: Int, min: Int, max: Int, type: Int) {
             }
 
+            override fun onPreScroll(parent: CoordinatorLayout, view: View, current: Int, initial: Int, trigger: Int, min: Int, max: Int, type: Int) {
+
+            }
+
             override fun onStartScroll(parent: CoordinatorLayout, view: View, initial: Int, trigger: Int, min: Int, max: Int, type: Int) {
 
             }
@@ -222,6 +230,10 @@ class NewsFragment : BaseFragment() {
         contentBehavior.addOnScrollListener(object : OnScrollListener {
             override fun onStartScroll(parent: CoordinatorLayout, view: View, initial: Int, trigger: Int, min: Int, max: Int, type: Int) {
                 binding.contentProgress.max = max
+            }
+
+            override fun onPreScroll(parent: CoordinatorLayout, view: View, current: Int, initial: Int, trigger: Int, min: Int, max: Int, type: Int) {
+
             }
 
             override fun onScroll(parent: CoordinatorLayout, view: View, current: Int, delta: Int, initial: Int, trigger: Int, min: Int, max: Int, type: Int) {

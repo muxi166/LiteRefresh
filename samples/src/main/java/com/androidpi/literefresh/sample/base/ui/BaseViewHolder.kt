@@ -19,14 +19,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.recyclerview.widget.RecyclerView
-import layoutbinder.annotations.BindLayout
+import androidx.viewbinding.ViewBinding
 import timber.log.Timber
-import java.lang.IllegalArgumentException
 import java.lang.reflect.InvocationTargetException
 import java.util.*
 import kotlin.reflect.KClass
@@ -36,7 +34,7 @@ import kotlin.reflect.KClass
  *
  * One view holder is bound with one layout, but the rendered data types has no limitation.
  */
-abstract class BaseViewHolder<VDB : ViewDataBinding>(itemView: View?) : RecyclerView.ViewHolder(itemView!!), LifecycleOwner {
+abstract class BaseViewHolder<VDB : ViewBinding>(itemView: View?) : RecyclerView.ViewHolder(itemView!!), LifecycleOwner {
     private val lifecycleRegistry = LifecycleRegistry(this)
     protected var binding: VDB? = null
     protected var dataType: List<KClass<*>> = ArrayList()

@@ -37,8 +37,8 @@ interface OpenWeatherMapApi {
                           @Query("appid") appid: String = APP_ID): Single<ResCurrentWeather>
 
     companion object {
-        val BASE_URL = "http://api.openweathermap.org"
-        val APP_ID = "d1dfb0110bec1a4281900b8c1ac8f759"
-        val ICON_URL_FORMAT = "http://openweathermap.org/img/w/%s.png"
+        val BASE_URL = "https://api.openweathermap.org"
+        val APP_ID = "9ce9f3756cec0215f881d42d0fbcad6f"
+        val ICON_URL_FORMAT = "https://openweathermap.org/img/w/%s.png"
     }
 }

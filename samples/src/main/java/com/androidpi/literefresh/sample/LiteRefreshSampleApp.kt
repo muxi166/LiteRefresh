@@ -15,11 +15,19 @@
  */
 package com.androidpi.literefresh.sample
 
-import android.app.Application
 import androidx.multidex.MultiDexApplication
 import com.androidpi.literefresh.sample.common.log.LogHelper.init
+import tv.danmaku.ijk.media.player.IjkMediaPlayer
 
 class LiteRefreshSampleApp : MultiDexApplication() {
+
+    companion object {
+        init {
+            IjkMediaPlayer.loadLibrariesOnce(null);
+            IjkMediaPlayer.native_profileBegin("libijkplayer.so");
+        }
+    }
+
     override fun onCreate() {
         super.onCreate()
         init()

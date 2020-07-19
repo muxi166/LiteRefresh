@@ -21,7 +21,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
-import kotlin.reflect.KClass
 
 class RecyclerAdapter : RecyclerView.Adapter<BaseViewHolder<*>?>() {
     private val mDataViewMap = SparseIntArray()
@@ -61,9 +60,17 @@ class RecyclerAdapter : RecyclerView.Adapter<BaseViewHolder<*>?>() {
         }
     }
 
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+    }
+
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
         unregisterAdapterDataObserver(adapterDataObserver)
+    }
+
+    fun attachToRecyclerView(recyclerView: RecyclerView) {
+        recyclerView.adapter = this
     }
 
     /**
@@ -177,12 +184,19 @@ class RecyclerAdapter : RecyclerView.Adapter<BaseViewHolder<*>?>() {
         notifyItemRangeInserted(positionStart, added)
     }
 
-    fun addSinglePayload(payload: Any?) {
-        if (payload == null || contains(payload)) return
+    fun addPayload(vararg payloads: Any) {
+        if (null == payloads || payloads.isEmpty()) {
+            return
+        }
+        var added = 0
         val positionStart = mPayloads.size
-        val itemCount = 1
-        mPayloads.add(payload)
-        notifyItemRangeInserted(positionStart, itemCount)
+        for (obj in payloads) {
+            if (!contains(obj)) {
+                mPayloads.add(obj)
+                added++
+            }
+        }
+        notifyItemRangeInserted(positionStart, added)
     }
 
     operator fun contains(`object`: Any): Boolean {

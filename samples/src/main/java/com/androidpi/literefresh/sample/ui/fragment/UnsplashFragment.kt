@@ -21,7 +21,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.math.MathUtils
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import com.androidpi.literefresh.LiteRefreshHelper
+import com.androidpi.literefresh.LiteRefresh
 import com.androidpi.literefresh.OnRefreshListener
 import com.androidpi.literefresh.OnScrollListener
 import com.androidpi.literefresh.behavior.RefreshHeaderBehavior
@@ -45,7 +45,7 @@ class UnsplashFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.imagePagerHeader.setFragmentManager(childFragmentManager)
         val fragment = childFragmentManager.findFragmentById(R.id.fragment) as UnsplashPhotoListFragment?
-        val headerBehavior = LiteRefreshHelper.getHeaderBehavior(binding!!.scaleableHeader)
+        val headerBehavior = LiteRefresh.getHeaderBehavior(binding!!.scaleableHeader)
                 .with(requireContext())
                 .maxOffsetRatio(R.fraction.percent_100p.toFloat())
                 .triggerOffsetRes(R.dimen.unsplash_fragment_trigger_offset)
@@ -84,6 +84,10 @@ class UnsplashFragment : BaseFragment() {
         headerBehavior?.addOnScrollListener(object : OnScrollListener {
             override fun onStartScroll(parent: CoordinatorLayout, view: View, initial: Int, trigger: Int, min: Int, max: Int, type: Int) {
                 triggerOffset = trigger - initial
+            }
+
+            override fun onPreScroll(parent: CoordinatorLayout, view: View, current: Int, initial: Int, trigger: Int, min: Int, max: Int, type: Int) {
+
             }
 
             override fun onScroll(parent: CoordinatorLayout, view: View, current: Int, delta: Int, initial: Int, trigger: Int, min: Int, max: Int, type: Int) {

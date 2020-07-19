@@ -20,10 +20,10 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import com.androidpi.literefresh.sample.LiteRefreshSamples.samples
 import com.androidpi.literefresh.sample.R
 import com.androidpi.literefresh.sample.base.ui.BaseFragment
 import com.androidpi.literefresh.sample.databinding.FragmentLiteRefreshPagerBinding
-import com.androidpi.literefresh.sample.model.LiteRefreshSamples.samples
 import layoutbinder.annotations.BindLayout
 
 class LiteRefreshPagerFragment : BaseFragment() {

@@ -23,7 +23,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import com.androidpi.literefresh.LiteRefreshHelper
+import com.androidpi.literefresh.LiteRefresh
 import com.androidpi.literefresh.OnRefreshListener
 import com.androidpi.literefresh.OnScrollListener
 import com.androidpi.literefresh.behavior.RefreshHeaderBehavior
@@ -52,7 +52,7 @@ class MoviePagerFragment : BaseFragment() {
         binding!!.imagePagerHeader.setFragmentManager(childFragmentManager)
         binding!!.viewPager.adapter = pagerAdapter
         binding!!.pagerTabs.setupWithViewPager(binding!!.viewPager)
-        val headerBehavior = LiteRefreshHelper.getAttachedBehavior<RefreshHeaderBehavior<*>>(binding!!.viewHeader)
+        val headerBehavior = LiteRefresh.getAttachedBehavior<RefreshHeaderBehavior<*>>(binding!!.viewHeader)
         viewModel!!.dayTrendingAllResults.observe(viewLifecycleOwner, Observer { resTrendingPageResource ->
             if (resTrendingPageResource == null) return@Observer
             if (resTrendingPageResource.isSuccess) {
@@ -65,6 +65,9 @@ class MoviePagerFragment : BaseFragment() {
         })
         headerBehavior.addOnScrollListener(object : OnScrollListener {
             override fun onStartScroll(parent: CoordinatorLayout, view: View, initial: Int, trigger: Int, min: Int, max: Int, type: Int) {}
+            override fun onPreScroll(parent: CoordinatorLayout, view: View, current: Int, initial: Int, trigger: Int, min: Int, max: Int, type: Int) {
+            }
+
             override fun onScroll(parent: CoordinatorLayout, view: View, current: Int, delta: Int, initial: Int, trigger: Int, min: Int, max: Int, type: Int) {
                 val percent = (current - initial) / (trigger - initial).toFloat()
                 binding!!.circleProgress.setProgress(percent)

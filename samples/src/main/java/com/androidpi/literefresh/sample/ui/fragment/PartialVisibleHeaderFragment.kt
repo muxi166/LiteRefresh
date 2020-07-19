@@ -22,7 +22,7 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import com.androidpi.literefresh.LiteRefreshHelper
+import com.androidpi.literefresh.LiteRefresh
 import com.androidpi.literefresh.OnLoadListener
 import com.androidpi.literefresh.OnRefreshListener
 import com.androidpi.literefresh.OnScrollListener
@@ -55,8 +55,8 @@ class PartialVisibleHeaderFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         GlideApp.with(view).load(R.mipmap.photo4).into(binding.ivPhoto)
-        headerBehavior = LiteRefreshHelper.getAttachedBehavior(binding.viewHeader)
-        footerBehavior = LiteRefreshHelper.getAttachedBehavior(binding.viewFooter)
+        headerBehavior = LiteRefresh.getAttachedBehavior(binding.viewHeader)
+        footerBehavior = LiteRefresh.getAttachedBehavior(binding.viewFooter)
         photoListFragment = childFragmentManager.findFragmentById(R.id.fragment_list) as UnsplashPhotoListFragment?
         unsplashViewModel.randomPhotosResult.observe(viewLifecycleOwner, Observer<Resource<UnsplashPhotoPage>> { listResource ->
             if (listResource == null) return@Observer
@@ -80,6 +80,10 @@ class PartialVisibleHeaderFragment : BaseFragment() {
                 override fun onStartScroll(parent: CoordinatorLayout, view: View, initial: Int, trigger: Int, min: Int, max: Int, type: Int) {
 //                    binding.circleProgress.setVisibility(View.VISIBLE);
 //                    circularProgressDrawable.start();
+                }
+
+                override fun onPreScroll(parent: CoordinatorLayout, view: View, current: Int, initial: Int, trigger: Int, min: Int, max: Int, type: Int) {
+
                 }
 
                 override fun onScroll(parent: CoordinatorLayout, view: View, current: Int, delta: Int, initial: Int, trigger: Int, min: Int, max: Int, type: Int) {
@@ -137,6 +141,10 @@ class PartialVisibleHeaderFragment : BaseFragment() {
         if (footerBehavior != null) {
             footerBehavior?.addOnScrollListener(object : OnScrollListener {
                 override fun onStartScroll(parent: CoordinatorLayout, view: View, initial: Int, trigger: Int, min: Int, max: Int, type: Int) {}
+                override fun onPreScroll(parent: CoordinatorLayout, view: View, current: Int, initial: Int, trigger: Int, min: Int, max: Int, type: Int) {
+
+                }
+
                 override fun onScroll(parent: CoordinatorLayout, view: View, current: Int, delta: Int, initial: Int, trigger: Int, min: Int, max: Int, type: Int) {
                     binding.footerCircleProgress.setProgress(Math.max(0f, current.toFloat() / trigger))
                 }

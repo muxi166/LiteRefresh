@@ -19,7 +19,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import com.androidpi.literefresh.LiteRefreshHelper
+import com.androidpi.literefresh.LiteRefresh
 import com.androidpi.literefresh.OnRefreshListener
 import com.androidpi.literefresh.OnScrollListener
 import com.androidpi.literefresh.behavior.RefreshHeaderBehavior
@@ -33,7 +33,7 @@ class WeatherHeaderView @JvmOverloads constructor(context: Context, attrs: Attri
     private val offset: Float
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        val behavior = LiteRefreshHelper.getAttachedBehavior<RefreshHeaderBehavior<*>>(this)
+        val behavior = LiteRefresh.getAttachedBehavior<RefreshHeaderBehavior<*>>(this)
         if (behavior != null) {
             behavior.addOnRefreshListener(this)
             behavior.addOnScrollListener(this)
@@ -41,6 +41,10 @@ class WeatherHeaderView @JvmOverloads constructor(context: Context, attrs: Attri
     }
 
     override fun onStartScroll(parent: CoordinatorLayout, view: View, initial: Int, trigger: Int, min: Int, max: Int, type: Int) {}
+    override fun onPreScroll(parent: CoordinatorLayout, view: View, current: Int, initial: Int, trigger: Int, min: Int, max: Int, type: Int) {
+
+    }
+
     override fun onScroll(parent: CoordinatorLayout, view: View, current: Int, delta: Int, initial: Int, trigger: Int, min: Int, max: Int, type: Int) {
         val height = height.toFloat()
         if (current > offset) {
